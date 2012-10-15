@@ -22,7 +22,7 @@
 #define PLATEAWARENESSCONSTANT 1 // raise to let batters identify pitchers more often
 #define HOMERUNCONSTANT .2 // raise to increase chances of a batter hitting a home run
 #define POWERCONSTANT .1 // raise to increase chances of a batter hitting an extra-base hit
-#define HITCONSTANT .3 // raise to increase chances of a ball landing for a hit
+#define HITCONSTANT .25 // raise to increase chances of a ball landing for a hit
 #define FOULFLYBALLCONSTANT .4 // raise to increase the chances of a contacted non-hit flyball landing foul
 #define FOULGROUNDBALLCONSTANT .2 // raise to increase the chances of a contacted non-hit groundball going foul
 #define STRIKEOUTCONSTANT 8 // raise this to increase the chances of a batter hitting a strike
@@ -161,12 +161,14 @@ void GameSimulator::simulateContact() {
 	else {
 		// not home run
 		if(HITCONSTANT*100 >= contactVar) {
+			// TO-DO: choose where ball is hit to, determine if there's an error
 			if(powerRating >= rand()%1000) {
 				std::cout << "** " << curBatter.name << " doubled! **" << std::endl << std::endl;
 				result = DOUBLE;
 			}
 			else {
 				// hit, but not a double
+				// TO-DO: choose where ball is hit to, determine if there's an error
 				std::cout << "** " << curBatter.name << " singled! **" << std::endl << std::endl;
 				result = SINGLE;
 			}
@@ -180,11 +182,15 @@ void GameSimulator::simulateContact() {
 					result = FOUL;
 					if(curStrikes!=2)
 						curStrikes++;
-					std::cout << curBatter.name << " fouled one away!" << std::endl;
+					std::cout << curBatter.name << " fouled one into the stands!" << std::endl;
 				}
 				else {
 					// flyball out
-					std::cout << "** " << curBatter.name << " flew out! **" << std::endl << std::endl;
+					// TO-DO: choose where ball is flown to, determine if there's an error
+					if(rand()%100 < 75)
+						std::cout << "** " << curBatter.name << " flew out! **" << std::endl << std::endl;
+					else
+						std::cout << "** " << curBatter.name << " flew out in foul territory! **" << std::endl << std::endl;
 					result = FLYOUT;
 					curOuts++;
 				}
@@ -200,14 +206,14 @@ void GameSimulator::simulateContact() {
 					}
 				else {
 					// groundball out
-					std::cout << "** " << curBatter.name << " singled! **" << std::endl << std::endl;
+					// TO-DO: choose where ball is grounded to, determine if there's an error
+					std::cout << "** " << curBatter.name << " grounded out! **" << std::endl << std::endl;
 					result = GROUNDOUT;
 					curOuts++;
 				}
 			}
 		}
 	}
-
 	if(result != FOUL) {
 			curBatterOut = true;
 			curBalls = 0;
