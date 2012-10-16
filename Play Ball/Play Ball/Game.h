@@ -24,6 +24,8 @@ public:
 	int awayStartPitcher;
 	int homeStartPitcher;
 
+	std::string awayTeamName;
+	std::string homeTeamName;
 	std::string halfInning;
 	Player awayTeam[9];
 	Player homeTeam[9];

@@ -31,6 +31,8 @@
 using namespace std;
 
 void Game::setUpGame(string awayTeam, string homeTeam) {
+		awayTeamName = awayTeam;
+		homeTeamName = homeTeam;
 		currentInning = 1;
 		curHomeBatter = 0;
 		curAwayBatter = 0;
@@ -43,6 +45,7 @@ void Game::setUpGame(string awayTeam, string homeTeam) {
 		awayWalks = 0;
 		homeWalks = 0;
 		baseSituation = 0;
+		startGame();
 }	
 void Game::setAwayTeam() {
 	// batters
@@ -439,25 +442,13 @@ void Game::playBall() {
 	endGame();
 }
 void Game::startGame() {
-	std::string awayTeam;
-	std::string homeTeam;
 	awayStartPitcher = 0;
 	homeStartPitcher = 0;
 
 	srand((unsigned)time(NULL));
-
-	// cout << "WELCOME TO 'PLAY BALL'! PLEASE SELECT THE AWAY TEAM USING THE TEAM'S THREE-CHARACTER ABBREVIATION." << endl << endl;
-	// cin >> awayTeam;
 	setAwayTeam();
-
-	// cout << "******************************" << endl << endl << "YOU HAVE CHOSEN '" << awayTeam << "' AS THE AWAY TEAM." << endl << endl;
-	// cout << "PLEASE SELECT THE HOME TEAM USING THE TEAM'S THREE-CHARACTER ABBREVIATION." << endl << endl;
-
-	// cin >> homeTeam;
 	setHomeTeam();
-
-	// cout << "******************************" << endl << endl << "YOU HAVE CHOSEN '" << homeTeam << "' AS THE HOME TEAM." << endl << endl;
-	std::cout << "PLEASE SELECT THE NUMBER OF ONE OF THE FOLLOWING STARTING PITCHERS FOR THE AWAY TEAM, BALTIMORE:" << std::endl << std::endl;
+	std::cout << "Please select one of the following pitchers for " << awayTeamName << ":" << std::endl << std::endl;
 	
 		for(int x = 0; x < 6; x++) {
 		std::cout << x+1 << ". " << awayPitchers[x].name << std::endl;
@@ -466,8 +457,8 @@ void Game::startGame() {
 	std::cin >> awayStartPitcher;
 	awayStartPitcher--;
 
-	std::cout << std::endl << "******************************" << std::endl << std::endl << "YOU HAVE CHOSEN '" << awayPitchers[awayStartPitcher].name << "' AS THE STARTING PITCHER FOR BALTIMORE." << std::endl << std::endl;
-	std::cout << "PLEASE SELECT THE NUMBER OF ONE OF THE FOLLOWING STARTING PITCHERS FOR THE HOME TEAM, NEW YORK:" << std::endl << std::endl;
+	std::cout << std::endl << "******************************" << std::endl << std::endl << "You have chosen '" << awayPitchers[awayStartPitcher].name << "' as the starting pitcher for " << awayTeamName << "." << std::endl << std::endl;
+	std::cout << "Please select one of the following pitchers for the home team, " << homeTeamName << ":" << std::endl << std::endl;
 	
 	for(int x = 0; x < 6; x++) {
 		std::cout << x+1 << ". " << homePitchers[x].name << std::endl;
@@ -475,7 +466,7 @@ void Game::startGame() {
 	std::cout << std::endl;
 	std::cin >> homeStartPitcher;
 	homeStartPitcher--;
-	std::cout << std::endl << "******************************" << std::endl << std::endl << "YOU HAVE CHOSEN '" << homePitchers[homeStartPitcher].name << "' AS THE STARTING PITCHER FOR NEW YORK." << std::endl << std::endl;
+	std::cout << std::endl << "******************************" << std::endl << std::endl << "You have chosen '" << homePitchers[homeStartPitcher].name << "' as the starting pitcher for " << homeTeamName << "." << std::endl << std::endl;
 	std::cout << "Get ready as " << awayPitchers[awayStartPitcher].name << " and the Orioles prepare to take on  " << homePitchers[homeStartPitcher].name << " and the Yankees!" << std::endl << std::endl;
 
 	playBall();
@@ -508,8 +499,8 @@ void Game::endGame() {
 	std::cout << awayPitchers[awayStartPitcher].name << ": " << homeHits << " hits, " << awayPitchers[awayStartPitcher].gPStrikeouts << " K, " << homeWalks << " BB" << std::endl;
 	std::cout << homePitchers[homeStartPitcher].name << ": " << awayHits << " hits, " << homePitchers[homeStartPitcher].gPStrikeouts << " K, " << awayWalks << " BB" << std::endl;
 	std::cout << homeTeam[8].name << ": " << homeTeam[8].gHits << "-" << homeTeam[8].gAtBats << ", " << homeTeam[8].gWalks << " walks, " << homeTeam[8].gHomeRuns << " HR, " << homeTeam[8].gRBI << " RBI" << std::endl;
-	std::cout << awayTeam[8].name << ": " << awayTeam[8].gHits << "-" << awayTeam[8].gAtBats << ", " << awayTeam[8].gWalks << " walks, " << awayTeam[8].gHomeRuns << " HR, " << awayTeam[8].gRBI << " RBI" << std::endl;
-	}	
+	std::cout << awayTeam[8].name << ": " << awayTeam[8].gHits << "-" << awayTeam[8].gAtBats << ", " << awayTeam[8].gWalks << " walks, " << awayTeam[8].gHomeRuns << " HR, " << awayTeam[8].gRBI << " RBI" << std::endl << endl << endl;	
+}	
 void Game::flipInning() { 
 		if(halfInning == "Top")
 		{

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <iostream>
 #include <stdio.h>
+#include <fstream>
 #include "GameSimulator.h"
 
 #define LEFT 0
@@ -27,21 +28,26 @@
 #define FOULGROUNDBALLCONSTANT .2 // raise to increase the chances of a contacted non-hit groundball going foul
 #define STRIKEOUTCONSTANT 8 // raise this to increase the chances of a batter hitting a strike
 
+using namespace std;
+
 int GameSimulator::simulateAtBat(Player pitcher, Player batter) {
 	// uncomment the following line to go through the game batter-by-batter
-	// std::cin.get();
+	// cin.get();
 	curPitcher = pitcher;
 	curBatter = batter;
 	curBatterOut = 0;
 	while(!curBatterOut)
 	//	pitcher.pitchCount++;
 		throwPitch();
-
 	return result;
 }
 void GameSimulator::throwPitch() {
 	// uncomment the following line to go through the game pitch-by-pitch
-	// std::cin.get();
+	// cin >> userReq;
+	//if(userReq == "save") {
+	//	saveGame();
+	//}
+	//else {
 	bool strike = false;
 	bool batterIdentifiedPitch = false;
 	if(curBatter.plateAwareness * PLATEAWARENESSCONSTANT * (1000-curPitcher.kAbility)/1000 >= rand()%100) {
@@ -49,7 +55,7 @@ void GameSimulator::throwPitch() {
 	}
 	// pitcher.stamina, pitcher.control, pitcher.composure, batter.plateAwareness determine ball/strike
 	double chanceOfStrike = 100 * curPitcher.control/100 * STRIKECONSTANT * curPitcher.composure/100 * curPitcher.stamina/(pow((curPitcher.gInningsPitched+1), .2));
-	// std::cout << curPitcher.control/100 << " * " << curPitcher.composure/100 <<  " * .75 *  " << curPitcher.stamina/(pow((curPitcher.gInningsPitched+1), .1)) << " = " << chanceOfStrike << std::endl;
+	// cout << curPitcher.control/100 << " * " << curPitcher.composure/100 <<  " * .75 *  " << curPitcher.stamina/(pow((curPitcher.gInningsPitched+1), .1)) << " = " << chanceOfStrike << endl;
 	if(chanceOfStrike >= rand()%1000) {
 		strike = true;
 	} else { 
@@ -63,28 +69,28 @@ void GameSimulator::throwPitch() {
 		// took strike
 		curStrikes++;
 		if(curStrikes!=3)
-			std::cout << curBatter.name << " took a strike! Count: " << curBalls << "-" << curStrikes << "." << std::endl;
+			cout << curBatter.name << " took a strike! Count: " << curBalls << "-" << curStrikes << "." << endl;
 		else
-			std::cout << curBatter.name << " took strike three!" << std::endl << std::endl ;
+			cout << curBatter.name << " took strike three!" << endl << endl ;
 	}
 	else if(!strike && batterIdentifiedPitch) {
 		// took ball
 		curBalls++;
 		if(curBalls!=4)
-			std::cout << curBatter.name << " took a ball! Count: " << curBalls << "-" << curStrikes << "." << std::endl;
+			cout << curBatter.name << " took a ball! Count: " << curBalls << "-" << curStrikes << "." << endl;
 		else
-			std::cout << curBatter.name << " took ball four!" << std::endl << std::endl;
+			cout << curBatter.name << " took ball four!" << endl << endl;
 	}	
 	else if (!strike && !batterIdentifiedPitch) {
 		// swung at ball
 		curStrikes++;
 		if(curStrikes!=3)
-			std::cout << curBatter.name << " swung at a ball! Count: " << curBalls << "-" << curStrikes << "." << std::endl;
+			cout << curBatter.name << " swung at a ball! Count: " << curBalls << "-" << curStrikes << "." << endl;
 		else
-			std::cout << curBatter.name << " swung at strike three!" << std::endl;
+			cout << curBatter.name << " swung at strike three!" << endl;
 		}
 	if(curBalls == 4) {
-		std::cout << "** " << curBatter.name << " walked! **" << std::endl << std::endl;
+		cout << "** " << curBatter.name << " walked! **" << endl << endl;
 		curBatterOut = 1;
 		curStrikes = 0;
 		curBalls = 0;
@@ -92,12 +98,13 @@ void GameSimulator::throwPitch() {
 	}
 	if(curStrikes == 3) {
 		curOuts++;
-		std::cout << "** " << curBatter.name << " struck out! **" << std::endl << std::endl;
+		cout << "** " << curBatter.name << " struck out! **" << endl << endl;
 		curBatterOut = 1;
 		curStrikes = 0;
 		curBalls = 0;
 		result = STRIKEOUT;
 	}
+	//}
 }
 void GameSimulator::batterSwing() {
 	double chanceOfContact = 1000;
@@ -123,23 +130,23 @@ void GameSimulator::batterSwing() {
 		}
 	
 	}
-	// std::cout << "chanceOfContact: " << chanceOfContact << std::endl;
+	// cout << "chanceOfContact: " << chanceOfContact << endl;
 	if(chanceOfContact >= rand()%1400) {
-		// std::cout << "Contact made!" << std::endl;
+		// cout << "Contact made!" << endl;
 		 simulateContact();
 	} else {
 		curStrikes++;
 		if(curStrikes == 3) {
-			std::cout << curBatter.name << " swung and missed!" << std::endl << std::endl;
+			cout << curBatter.name << " swung and missed!" << endl << endl;
 			result = STRIKEOUT;
 			curOuts++;
-			std::cout << "** " << curBatter.name << " struck out! **" << std::endl << std::endl;
+			cout << "** " << curBatter.name << " struck out! **" << endl << endl;
 			curBatterOut = true;
 			curStrikes = 0;
 			curBalls = 0;
 		}
 		else {
-				std::cout << curBatter.name << " swung and missed! Count: " << curBalls << "-" << curStrikes << std::endl;
+				cout << curBatter.name << " swung and missed! Count: " << curBalls << "-" << curStrikes << endl;
 		}
 	}
 }
@@ -155,7 +162,7 @@ void GameSimulator::simulateContact() {
 	// powerRating = chance of double
 	// powerRating / 4 = chance of home run
 	if(powerRating / (1/HOMERUNCONSTANT) >= rand()%1000) {
-		std::cout << "** HOME RUN, " << curBatter.name << "! **" << std::endl << std::endl;
+		cout << "** HOME RUN, " << curBatter.name << "! **" << endl << endl;
 		result = HOMERUN;
 	}
 	else {
@@ -163,13 +170,13 @@ void GameSimulator::simulateContact() {
 		if(HITCONSTANT*100 >= contactVar) {
 			// TO-DO: choose where ball is hit to, determine if there's an error
 			if(powerRating >= rand()%1000) {
-				std::cout << "** " << curBatter.name << " doubled! **" << std::endl << std::endl;
+				cout << "** " << curBatter.name << " doubled! **" << endl << endl;
 				result = DOUBLE;
 			}
 			else {
 				// hit, but not a double
 				// TO-DO: choose where ball is hit to, determine if there's an error
-				std::cout << "** " << curBatter.name << " singled! **" << std::endl << std::endl;
+				cout << "** " << curBatter.name << " singled! **" << endl << endl;
 				result = SINGLE;
 			}
 		}
@@ -182,15 +189,15 @@ void GameSimulator::simulateContact() {
 					result = FOUL;
 					if(curStrikes!=2)
 						curStrikes++;
-					std::cout << curBatter.name << " fouled one into the stands!" << std::endl;
+					cout << curBatter.name << " fouled one into the stands!" << endl;
 				}
 				else {
 					// flyball out
 					// TO-DO: choose where ball is flown to, determine if there's an error
 					if(rand()%100 < 75)
-						std::cout << "** " << curBatter.name << " flew out! **" << std::endl << std::endl;
+						cout << "** " << curBatter.name << " flew out! **" << endl << endl;
 					else
-						std::cout << "** " << curBatter.name << " flew out in foul territory! **" << std::endl << std::endl;
+						cout << "** " << curBatter.name << " flew out in foul territory! **" << endl << endl;
 					result = FLYOUT;
 					curOuts++;
 				}
@@ -199,7 +206,7 @@ void GameSimulator::simulateContact() {
 				// ground ball 
 				if(FOULGROUNDBALLCONSTANT*1000 >= rand()%1000) {
 					// foul groundball
-					std::cout << curBatter.name << " grounded one foul!" << std::endl;
+					cout << curBatter.name << " grounded one foul!" << endl;
 					result = FOUL;
 					if(curStrikes!=2)
 						curStrikes++;
@@ -207,7 +214,7 @@ void GameSimulator::simulateContact() {
 				else {
 					// groundball out
 					// TO-DO: choose where ball is grounded to, determine if there's an error
-					std::cout << "** " << curBatter.name << " grounded out! **" << std::endl << std::endl;
+					cout << "** " << curBatter.name << " grounded out! **" << endl << endl;
 					result = GROUNDOUT;
 					curOuts++;
 				}
@@ -219,4 +226,21 @@ void GameSimulator::simulateContact() {
 			curBalls = 0;
 			curStrikes = 0;
 	}
+}
+void GameSimulator::saveGame(){
+	string fileName;
+	cout << "SAVED!" << endl;
+	//cout << "What would you like to name this save file?" << endl << endl;
+	//fileName = cin.getline;
+	//fileName.append(".playball");
+	//ofstream saveFile;
+	//saveFile.open (fileName);
+	//saveFile.write(curPitcher);
+	//saveFile.write(curBatter);
+	//saveFile.write(curStrikes);
+	//saveFile.write(curBalls);
+	//saveFile.write(result);
+	//saveFile.write(curBatterOut);
+	//myfile << ();
+	//myfile.close();
 }

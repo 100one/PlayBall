@@ -11,10 +11,12 @@ private:
 	int curBalls;
 	int result;
 	bool curBatterOut;
+	std::string userReq;
 
 public:
 	int simulateAtBat(Player pitcher, Player batter);
 	void throwPitch();
 	void batterSwing();
 	void simulateContact();
+	void GameSimulator::saveGame();
 };
